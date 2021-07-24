@@ -1,3 +1,4 @@
+import 'package:brightness_control/custom_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,7 +9,7 @@ void main() => runApp(
         theme: ThemeData(
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          primarySwatch: Colors.teal,
+          primarySwatch: Colors.red,
         ),
         home: Home(),
       ),
@@ -76,6 +77,7 @@ class BuildContent extends StatelessWidget {
           child: Text("Name room", style: TextStyle(color: Colors.black54)),
         ),
         SizedBox(height: 5),
+        SliderWidget(),
       ],
     );
   }

@@ -1,6 +1,8 @@
-import 'package:brightness_control/custom_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'Light Slider/customSlider.dart';
+import 'Volume Slider/customSlider.dart';
 
 void main() => runApp(
       GetMaterialApp(
@@ -61,7 +63,7 @@ class BuildSheet extends StatelessWidget {
 class BuildContent extends StatelessWidget {
   final ScrollController controller;
 
-  const BuildContent({
+  BuildContent({
     Key? key,
     required this.controller,
   }) : super(key: key);
@@ -76,8 +78,15 @@ class BuildContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Text("Name room", style: TextStyle(color: Colors.black54)),
         ),
-        SizedBox(height: 5),
-        SliderWidget(),
+        SizedBox(height: 50),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LightSlider(),
+            SizedBox(width: 50),
+            CustomSlider(),
+          ],
+        ),
       ],
     );
   }

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class DrawTrack extends CustomPainter {
+class DrawLightTrack extends CustomPainter {
   final double sliderPosition;
   final double dragPercentage;
   final Color color;
   final trackShape, indicatorShape, indicatorBorder;
-  final double stroke_width;
+  final double strokewidth;
 
-  DrawTrack({
+  DrawLightTrack({
     this.sliderPosition = 0.0,
     this.dragPercentage = 0.0,
-    required this.stroke_width,
-    this.color = Colors.black26,
+    required this.strokewidth,
+    this.color = Colors.black,
   })  : trackShape = Paint()
           ..color = color
-          ..strokeWidth = stroke_width
+          ..strokeWidth = strokewidth
           ..style = PaintingStyle.fill,
         indicatorShape = Paint()
           ..color = Colors.red
@@ -27,7 +27,7 @@ class DrawTrack extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //_drawAnchor(canvas, size);
     _drawLine(canvas, size);
-    //_drawIndicator(canvas, size);
+    _drawActiveLine(canvas, size);
   }
 
   @override
@@ -40,12 +40,35 @@ class DrawTrack extends CustomPainter {
   }*/
   void _drawLine(Canvas canvas, Size size) {
     canvas.drawRect(
-      Offset(0, 0) & Size(stroke_width, sliderPosition),
+      Offset(-strokewidth / 2, 0) & Size(strokewidth, sliderPosition),
       trackShape,
     );
   }
 
-  /*void _drawIndicator(Canvas canvas, Size size) {
+  void _drawActiveLine(Canvas canvas, Size size) {
+    final shape = Paint()
+      ..strokeWidth = 5.0
+      ..strokeCap = StrokeCap.round
+      ..color = Colors.red;
+
+    final path1 = Path();
+    path1.moveTo(0, size.height);
+    path1.lineTo(-3, size.height);
+    path1.lineTo(-5, sliderPosition);
+    path1.lineTo(0, sliderPosition);
+
+    path1.close();
+    canvas.drawPath(path1, shape);
+
+    final path2 = Path();
+    path2.moveTo(0, size.height);
+    path2.lineTo(3, size.height);
+    path2.lineTo(5, sliderPosition);
+    path2.lineTo(0, sliderPosition);
+
+    path2.close();
+    canvas.drawPath(path2, shape);
+
     canvas.drawCircle(
       Offset(0, sliderPosition),
       15.0,
@@ -56,5 +79,5 @@ class DrawTrack extends CustomPainter {
       12.0,
       indicatorShape,
     );
-  }*/
+  }
 }

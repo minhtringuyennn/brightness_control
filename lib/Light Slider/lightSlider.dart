@@ -1,4 +1,4 @@
-import 'package:brightness_control/Light%20Slider/customTrack.dart';
+import 'package:brightness_control/Light%20Slider/lightTrack.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,9 +13,8 @@ class LightSlider extends StatefulWidget {
 }
 
 class _LightSliderState extends State<LightSlider> {
-  //Offset location = Offset(0.0, 0.0);
-  RxDouble dragPosition = 0.0.obs;
-  RxDouble dragPercentage = 100.0.obs;
+  RxDouble dragPosition = 150.0.obs;
+  RxDouble dragPercentage = 50.0.obs;
 
   void _onDragUpdate(DragUpdateDetails update) {
     if (update.localPosition.dy > widget.height)
@@ -65,7 +64,7 @@ class _LightSliderState extends State<LightSlider> {
                   () => CustomPaint(
                     painter: DrawLightTrack(
                       sliderPosition: dragPosition.value,
-                      stroke_width: 8,
+                      strokewidth: 8,
                       color: Color.fromRGBO(182, 182, 182, 1),
                     ),
                   ),

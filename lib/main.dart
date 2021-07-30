@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'Light Slider/customSlider.dart';
-import 'Volume Slider/customSlider.dart';
+import 'Light Slider/lightSlider.dart';
+import 'Volume Slider/volumeController.dart';
+import 'Volume Slider/volumeSlider.dart';
 
 void main() => runApp(
       GetMaterialApp(
@@ -62,6 +63,7 @@ class BuildSheet extends StatelessWidget {
 
 class BuildContent extends StatelessWidget {
   final ScrollController controller;
+  final inpController = Get.put(VolumeController());
 
   BuildContent({
     Key? key,
@@ -78,14 +80,25 @@ class BuildContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Text("Name room", style: TextStyle(color: Colors.black54)),
         ),
-        SizedBox(height: 50),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LightSlider(),
-            SizedBox(width: 50),
-            CustomSlider(),
-          ],
+        SizedBox(height: 20),
+        TextField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter a number',
+          ),
+          controller: inpController.textController,
+          onSubmitted: inpController.onUpdate(),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LightSlider(),
+              SizedBox(width: 50),
+              CustomSlider(),
+            ],
+          ),
         ),
       ],
     );

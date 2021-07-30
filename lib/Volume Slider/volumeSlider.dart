@@ -1,4 +1,4 @@
-import 'package:brightness_control/Volume%20Slider/customTrack.dart';
+import 'package:brightness_control/Volume%20Slider/volumeTrack.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,9 +13,10 @@ class CustomSlider extends StatefulWidget {
 }
 
 class _CustomSliderState extends State<CustomSlider> {
-  //Offset location = Offset(0.0, 0.0);
-  RxDouble dragPosition = 0.0.obs;
-  RxDouble dragPercentage = 100.0.obs;
+  //VolumeController controller = Get.find();
+
+  RxDouble dragPosition = 150.0.obs;
+  RxDouble dragPercentage = 50.0.obs;
 
   void _onDragUpdate(DragUpdateDetails update) {
     if (update.localPosition.dy > widget.height)
@@ -49,12 +50,10 @@ class _CustomSliderState extends State<CustomSlider> {
               child: Container(
                 height: widget.height,
                 width: widget.width,
-                child: Obx(
-                  () => CustomPaint(
-                    painter: DrawTrack(
-                      sliderPosition: dragPosition.value,
-                      stroke_width: widget.width,
-                    ),
+                child: CustomPaint(
+                  painter: DrawTrack(
+                    sliderPosition: dragPosition.value,
+                    strokewidth: widget.width,
                   ),
                 ),
               ),
@@ -62,6 +61,7 @@ class _CustomSliderState extends State<CustomSlider> {
             Positioned(
               height: widget.height - dragPosition.value - 10,
               child: Text(
+                //'${textPercent.texttext}',
                 '${dragPercentage.round()}',
                 style: TextStyle(
                   fontSize: 20,

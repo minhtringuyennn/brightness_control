@@ -17,157 +17,78 @@ void main() => runApp(
       ),
     );
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
   @override
-  Widget build(context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Light setting app")),
-      body: Center(
-        child: ElevatedButton(
-          child: Text("Show Setting", style: TextStyle(fontSize: 20)),
-          onPressed: () => Get.bottomSheet(
-            BuildSheet(),
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-          ),
-        ),
-      ),
-    );
-  }
+  _HomeState createState() => _HomeState();
 }
 
-class BuildSheet extends StatelessWidget {
-  const BuildSheet({Key? key}) : super(key: key);
+class _HomeState extends State<Home> {
+  double newPer = 0.50, newPos = 150;
+  final _textController = TextEditingController();
+
+  void _onTextSubmitted(String text) {
+    try {
+      newPer = double.parse((1 - double.parse(text) / 100).toStringAsFixed(2));
+      newPos = double.parse((newPer * 300).toStringAsFixed(1));
+    } on Exception catch (e) {
+      print(e);
+    }
+
+    setState(() {});
+  }
+
+  void _onSliderChanged(double value) {
+    _textController.text = ((1 - value) * 100).round().toString();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ScrollConfiguration(
-      behavior: DisabledGlowScroll(),
-      child: DraggableScrollableSheet(
-        initialChildSize: 0.94,
-        minChildSize: 0.93,
-        maxChildSize: 0.94,
-        builder: (_, controller) => Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-          ),
-          padding: EdgeInsets.only(top: 20, right: 25, left: 25),
-          child: BuildContent(controller: controller),
-        ),
-      ),
-    );
-  }
-}
-
-class BuildContent extends StatefulWidget {
-  final ScrollController controller;
-
-  BuildContent({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
-
-  @override
-  _BuildContentState createState() => _BuildContentState();
-}
-
-class _BuildContentState extends State<BuildContent> {
-  final textController = TextEditingController();
-
-  Widget soundSlider = CustomSlider(percentage: "50");
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      controller: widget.controller,
-      children: [
-        BuildTitle(),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Text("Name room", style: TextStyle(color: Colors.black54)),
-        ),
-        SizedBox(height: 20),
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Enter a number',
-          ),
-          controller: textController,
-          onSubmitted: (text) {
-            print(textController.text);
-            String _text = textController.text;
-            setState(() => soundSlider = CustomSlider(percentage: _text));
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LightSlider(),
-              SizedBox(width: 50),
-              soundSlider,
-            ],
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Name Light', style: TextStyle(fontSize: 20)),
+          bottom: TabBar(
+            tabs: [Tab(text: 'Text Field View'), Tab(text: 'Slider View')],
           ),
         ),
-      ],
-    );
-  }
-}
-
-class BuildTitle extends StatelessWidget {
-  const BuildTitle({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Name light',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Row(
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: GestureDetector(
-                onTap: () {},
-                child: Icon(
-                  Icons.border_color_rounded,
-                  size: 22,
-                  color: Colors.black87,
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(36.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a number',
+                  ),
+                  controller: _textController,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 16),
+                  onSubmitted: _onTextSubmitted,
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: GestureDetector(
-                onTap: () => Get.back(),
-                child: Icon(
-                  Icons.close_rounded,
-                  size: 25,
-                  color: Colors.black87,
-                ),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LightSlider(),
+                  SizedBox(width: 20),
+                  CustomSlider(
+                    key: UniqueKey(),
+                    position: newPos,
+                    percentage: newPer,
+                    onChanged: _onSliderChanged,
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      ],
+      ),
     );
-  }
-}
-
-class DisabledGlowScroll extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
   }
 }

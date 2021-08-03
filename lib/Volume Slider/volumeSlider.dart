@@ -2,58 +2,47 @@ import 'package:flutter/material.dart';
 import 'volumeTrack.dart';
 
 class CustomSlider extends StatefulWidget {
-  final double width = 100;
-  final double height = 300;
-
-  final String percentage;
-
-  const CustomSlider({
-    Key? key,
-    required this.percentage,
-  }) : super(key: key);
+  final double width, height;
+  final double position, percentage;
+  final ValueChanged<double> onChanged;
+  const CustomSlider(
+      {Key? key,
+      this.height = 300,
+      this.width = 100,
+      this.position = 0,
+      this.percentage = 0,
+      required this.onChanged})
+      : super(key: key);
 
   @override
   _CustomSliderState createState() => _CustomSliderState();
 }
 
-class _CustomSliderState extends State<CustomSlider> {
-  double dragPercentage = 50.0;
-  double dragPosition = 150.0;
+class _CustomSliderState extends State<CustomSlider>
+    with AutomaticKeepAliveClientMixin {
+  late double position = widget.position;
+  late double percentage = widget.percentage;
+
+  @override
+  bool get wantKeepAlive => true;
 
   void _onDragUpdate(DragUpdateDetails update) {
-    dragPosition = update.localPosition.dy;
+    if (update.localPosition.dy > widget.height)
+      position = widget.height;
+    else
+      position = update.localPosition.dy;
+    if (update.localPosition.dy < 0) position = 0;
 
-    if (dragPosition > widget.height) dragPosition = widget.height;
-
-    if (update.localPosition.dy < 0) dragPosition = 0;
-
-    dragPosition = double.parse(dragPosition.toStringAsFixed(1));
-    dragPercentage = (1 - (dragPosition / widget.height)) * 100;
+    setState(() {
+      position = double.parse(position.toStringAsFixed(1));
+      percentage = double.parse((position / widget.height).toStringAsFixed(2));
+      widget.onChanged(percentage);
+    });
   }
 
   @override
-  void initState() {
-    double _percentage = double.parse(widget.percentage);
-    dragPercentage = _percentage;
-    dragPosition = 300 * (1 - (dragPercentage / 100));
+  void initState() => super.initState();
 
-    print("widget init $dragPercentage");
-
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant CustomSlider oldWidget) {
-    double _percentage = double.parse(widget.percentage);
-    dragPercentage = _percentage;
-    dragPosition = 300 * (1 - (dragPercentage / 100));
-
-    print("widget pass $dragPercentage, at $dragPosition");
-
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.width * .1),
@@ -74,7 +63,7 @@ class _CustomSliderState extends State<CustomSlider> {
               width: widget.width,
               child: CustomPaint(
                 painter: DrawTrack(
-                  sliderPosition: dragPosition,
+                  sliderPosition: position,
                   strokewidth: widget.width,
                 ),
               ),
@@ -82,10 +71,10 @@ class _CustomSliderState extends State<CustomSlider> {
 
             // Draw percentage
             Positioned(
-              height: widget.height - dragPosition - 10,
+              height: widget.height - position - 10,
               child: Text(
                 //'${textPercent.texttext}',
-                '${dragPercentage.round()}',
+                '${((1 - percentage) * 100).round()}',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,

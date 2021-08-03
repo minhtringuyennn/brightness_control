@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class VolumeController extends GetxController {
-  bool _isNumeric(String str) {
+  bool _isNumeric(String? str) {
     if (str == null) {
       return false;
     }

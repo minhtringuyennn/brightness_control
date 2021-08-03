@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'Light Slider/lightSlider.dart';
-import 'Volume Slider/volumeController.dart';
 import 'Volume Slider/volumeSlider.dart';
 
 void main() => runApp(
@@ -61,9 +60,8 @@ class BuildSheet extends StatelessWidget {
   }
 }
 
-class BuildContent extends StatelessWidget {
+class BuildContent extends StatefulWidget {
   final ScrollController controller;
-  final inpController = Get.put(VolumeController());
 
   BuildContent({
     Key? key,
@@ -71,9 +69,18 @@ class BuildContent extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _BuildContentState createState() => _BuildContentState();
+}
+
+class _BuildContentState extends State<BuildContent> {
+  final textController = TextEditingController();
+
+  Widget soundSlider = CustomSlider(percentage: "50");
+
+  @override
   Widget build(BuildContext context) {
     return ListView(
-      controller: controller,
+      controller: widget.controller,
       children: [
         BuildTitle(),
         Padding(
@@ -86,8 +93,12 @@ class BuildContent extends StatelessWidget {
             border: OutlineInputBorder(),
             hintText: 'Enter a number',
           ),
-          controller: inpController.textController,
-          onSubmitted: inpController.onUpdate(),
+          controller: textController,
+          onSubmitted: (text) {
+            print(textController.text);
+            String _text = textController.text;
+            setState(() => soundSlider = CustomSlider(percentage: _text));
+          },
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -96,7 +107,7 @@ class BuildContent extends StatelessWidget {
             children: [
               LightSlider(),
               SizedBox(width: 50),
-              CustomSlider(),
+              soundSlider,
             ],
           ),
         ),
